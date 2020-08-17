@@ -30,6 +30,7 @@ import config as cf
 import sys
 import csv
 from time import process_time 
+from collections import Counter
 
 def loadCSVFile (file, lst, sep=";"):
     """
@@ -108,7 +109,53 @@ def countElementsByCriteria(criteria, column, lst):
     """
     return 0
 
+def buenasPeliculas (name:str, casting:list, details:list)->tuple:
+    average = False
+    director = False
+    prom =0
+    contprom =0
+    cont=0
+    id1=False
+    id2=False
+    for i in casting.keys():
+        staff = casting[i]
+        if staff["director_name"]== name:
+            director = True
+            id1= True
+        for a in details.keys():
+            votos = details[a]
+            if votos["vote_average"] >= 6:
+                average = True
+                id2 = True
+                if average == True and director == True and id1==id2:
+                    contprom += (votos["vote_average"])
+                    cont +=1
+    prom = contprom/cont
+    return (cont,prom)
 
+
+    
+def conocerActor (name:str, casting:list, details:list)->tuple:
+    listaDirector = []
+    directorColab = 0
+    pelis =[]
+    cont = 0
+    contprom = 0
+    prom = 0
+    for i in casting.keys():
+        for a in details.keys():
+            votos = details[a]
+            staff = casting[i]
+            if (staff["actor1_name"]== name) or (staff["actor2_name"]== name) or (staff["actor3_name"]== name) or(staff["actor4_name"]== name) or(staff["actor5_name"]== name):
+              listaDirector.append (staff["director_name"])
+              pelis.append (votos["original_title"])
+              cont +=1
+              contprom += (votos["vote_average"])
+    prom = contprom/cont
+    c= Counter(listaDirector)
+    directorColab=(max(c, key=c.get)) 
+    return (pelis,cont,prom,directorColab)
+    
 def main():
     """
     Método principal del programa, se encarga de manejar todos los metodos adicionales creados
