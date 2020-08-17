@@ -26,14 +26,16 @@
   Este módulo es una aplicación básica con un menú de opciones para cargar datos, contar elementos, y hacer búsquedas sobre una lista.
 """
 
-
-
-
-import config as cf
-import sys
-import csv
 from time import process_time
-def loadCSVFile (file, lst, sep=";"):
+import csv
+import sys
+import config as cf
+from collections import Counter
+details_csv_name = "SmallMoviesDetailsCleaned.csv"
+casting_csv_name = "MoviesCastingRaw-small.csv"
+
+
+def loadCSVFile(file, lst, sep=";"):
     """
     Carga un archivo csv a una lista
     Args:
@@ -75,6 +77,7 @@ def printMenu():
     print("2- Contar los elementos de la Lista")
     print("3- Contar elementos filtrados por palabra clave")
     print("4- Consultar elementos a partir de dos listas")
+    print("5- Conocer las buenas películas")
     print("0- Salir")
 
 
@@ -114,6 +117,53 @@ def countElementsByCriteria(criteria, column, lst):
     return 0
 
 
+def buenasPeliculas(name: str, casting: dict, details: dict) -> tuple:
+    average = False
+    director = False
+    prom = 0
+    contprom = 0
+    cont = 0
+    id1 = False
+    id2 = False
+    for i in casting.keys():
+        staff = casting[i]
+        if staff["director_name"] == name:
+            director = True
+            id1 = True
+        for a in details.keys():
+            votos = details[a]
+            if votos["vote_average"] >= 6:
+                average = True
+                id2 = True
+                if average == True and director == True and id1 == id2:
+                    contprom += (votos["vote_average"])
+                    cont += 1
+    prom = contprom/cont
+    return (cont, prom)
+
+
+def conocerActor(name: str, casting: list, details: list) -> tuple:
+    listaDirector = []
+    directorColab = 0
+    pelis = []
+    cont = 0
+    contprom = 0
+    prom = 0
+    for i in casting.keys():
+        for a in details.keys():
+            votos = details[a]
+            staff = casting[i]
+            if (staff["actor1_name"] == name) or (staff["actor2_name"] == name) or (staff["actor3_name"] == name) or (staff["actor4_name"] == name) or (staff["actor5_name"] == name):
+                listaDirector.append(staff["director_name"])
+                pelis.append(votos["original_title"])
+                cont += 1
+                contprom += (votos["vote_average"])
+    prom = contprom/cont
+    c = Counter(listaDirector)
+    directorColab = (max(c, key=c.get))
+    return (pelis, cont, prom, directorColab)
+
+
 def main():
     """
     Método principal del programa, se encarga de manejar todos los metodos adicionales creados
@@ -122,32 +172,47 @@ def main():
     Args: None
     Return: None 
     """
-    lista = []  # instanciar una lista vacia
+    lista_details = []  # instanciar una lista vacia
+    lista_casting = []  # nueva lista
     while True:
         printMenu()  # imprimir el menu de opciones en consola
         # leer opción ingresada
         inputs = input('Seleccione una opción para continuar\n')
         if len(inputs) > 0:
             if int(inputs[0]) == 1:  # opcion 1
-                # llamar funcion cargar datos
-                loadCSVFile("Data/test.csv", lista)
-                print("Datos cargados, "+str(len(lista))+" elementos cargados")
+                # llamar funcion cargar datos (lista de detalles)
+                loadCSVFile(f"Data/{details_csv_name}", lista_details)
+                print("Datos cargados, "+str(len(lista_details)) +
+                      " elementos cargados")
+
+                # cargar datos (lista de casting)
+                loadCSVFile(f"Data/{casting_csv_name}", lista_casting)
+                print(
+                    f"Datos cargados, {len(lista_casting)} elementos cargados")
             elif int(inputs[0]) == 2:  # opcion 2
-                if len(lista) == 0:  # obtener la longitud de la lista
+                if len(lista_details) == 0:  # obtener la longitud de la lista
                     print("La lista esta vacía")
                 else:
-                    print("La lista tiene "+str(len(lista))+" elementos")
+                    print("La lista tiene "+str(len(lista_details))+" elementos")
             elif int(inputs[0]) == 3:  # opcion 3
                 criteria = input('Ingrese el criterio de búsqueda\n')
                 counter = countElementsFilteredByColumn(
-                    criteria, "nombre", lista)  # filtrar una columna por criterio
+                    criteria, "nombre", lista_details)  # filtrar una columna por criterio
                 print("Coinciden ", counter,
                       " elementos con el crtierio: ", criteria)
             elif int(inputs[0]) == 4:  # opcion 4
                 criteria = input('Ingrese el criterio de búsqueda\n')
-                counter = countElementsByCriteria(criteria, 0, lista)
+                counter = countElementsByCriteria(criteria, 0, lista_details)
                 print("Coinciden ", counter, " elementos con el crtierio: '",
                       criteria, "' (en construcción ...)")
+            elif int(inputs[0]) == 5:  # opcion 5
+                director = input('Ingrese el nombre del director\n')
+                buenaspelis = buenasPeliculas(
+                    director, lista_casting, lista_details)
+                print(
+                    f"Se encontraron {buenaspelis[0]} buenas películas con los parámetros dados.")
+                print(
+                    f"El promedio de la votación por dichas películas es de {buenaspelis[1]}.")
             elif int(inputs[0]) == 0:  # opcion 0, salir
                 sys.exit(0)
 
