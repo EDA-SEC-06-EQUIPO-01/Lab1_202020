@@ -117,31 +117,20 @@ def countElementsByCriteria(criteria, column, lst):
     """
     return 0
 
-
-def buenasPeliculas(name: str, casting: dict, details: dict) -> tuple:
-    average = False
-    director = False
-    prom = 0
+def buenasPeliculas(name, casting, details) -> tuple:
     contprom = 0
     cont = 0
-    id1 = False
-    id2 = False
-    for i in casting.keys():
-        staff = casting[i]
-        if staff["director_name"] == name:
-            director = True
-            id1 = True
-        for a in details.keys():
-            votos = details[a]
-            if votos["vote_average"] >= 6:
-                average = True
-                id2 = True
-                if average == True and director == True and id1 == id2:
-                    contprom += (votos["vote_average"])
+    for i in casting:
+        if i["director_name"] == name:
+            for j in details:
+                if i["id"] == j["id"] and float(j["vote_average"]) >= 6:
+                    contprom += float(j["vote_average"])
                     cont += 1
-    prom = contprom/cont
-    return (cont, prom)
-
+    try:
+        prom = contprom/cont
+        return (cont, prom)
+    except:
+        return (cont, 0)
 
 def conocerActor(name: str, casting: list, details: list) -> tuple:
     listaDirector = []
