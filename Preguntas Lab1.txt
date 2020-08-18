@@ -1,0 +1,29 @@
+1. ¿Cuál es el ciclo regular para actualizar código en un repositorio GIT?
+
+Estaría bien revisar cada día el repositorio GIT sobre el cual se esté trabajando un proyecto
+con el fin de corregir detalles y realizar las pruebas pertinentes para el funcionamiento de este.
+
+2. ¿Qué ventajas y limitantes tiene el uso de Ramas/Branches?
+
+Al utilizar diferentes ramas es más fácil identificar qué parte del equipo ha hecho ciertos cambios
+y esto facilita a mayor escala la comparación entre el trabajo realizado; sin embargo, al momento de
+combinar las ramas mediante merge, puede resultar bastante complejo de entender.
+
+3. ¿Cuáles serían las buenas prácticas para solucionar conflictos?
+
+En primera instancia, entender cuál era el fin de los cambios realizados por otro usuario, para esto es
+necesaria una continua comunicación entre los integrantes. Posteriormente, analizar si es posible corregirlos
+sin necesidad de eliminar código, de lo contrario, dialogar con los demás integrantes.
+
+4. ¿Qué orden de complejidad tendría las funciones (consulta y lectura de archivo)?
+
+Lineal: O(n)
+
+5. ¿Cómo podría reducir o aumentar la complejidad de la consulta?
+
+Dependiendo del número de caracteres que tenga dicho archivo.
+
+6. ¿Cómo afecta un TAD en la complejidad?, ¿Qué alternativas existen?
+
+Un TAD optimizaría la complejidad para un caso específico, si este está diseñado de acuerdo a las necesidades
+específicas que satisfaría, y las cumple con la menor complejidad posible.

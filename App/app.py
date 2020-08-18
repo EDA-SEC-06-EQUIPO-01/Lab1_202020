@@ -26,14 +26,15 @@
   Este módulo es una aplicación básica con un menú de opciones para cargar datos, contar elementos, y hacer búsquedas sobre una lista.
 """
 
+
 from time import process_time
 import csv
 import sys
 import config as cf
 from collections import Counter
+
 details_csv_name = "SmallMoviesDetailsCleaned.csv"
 casting_csv_name = "MoviesCastingRaw-small.csv"
-
 
 def loadCSVFile(file, lst, sep=";"):
     """
@@ -181,12 +182,11 @@ def main():
         if len(inputs) > 0:
             if int(inputs[0]) == 1:  # opcion 1
                 # llamar funcion cargar datos (lista de detalles)
-                loadCSVFile(f"Data/{details_csv_name}", lista_details)
+                loadCSVFile(f"../Data/{details_csv_name}", lista_details)
                 print("Datos cargados, "+str(len(lista_details)) +
                       " elementos cargados")
-
                 # cargar datos (lista de casting)
-                loadCSVFile(f"Data/{casting_csv_name}", lista_casting)
+                loadCSVFile(f"../Data/{casting_csv_name}", lista_casting)
                 print(
                     f"Datos cargados, {len(lista_casting)} elementos cargados")
             elif int(inputs[0]) == 2:  # opcion 2
